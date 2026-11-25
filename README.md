@@ -1,8 +1,6 @@
 # Groundwork: an AI study tutor that shows its sources
 
-(Built on a RAG document Q&A pipeline. The product name lives in `frontend/src/brand.ts` and the `<title>` in `frontend/index.html`; package names, the Docker database and the cookie name keep their original internal identifiers on purpose.)
-
-## Original description: RAG Document Q&A
+## Description: RAG Document Q&A
 
 A full-stack Retrieval-Augmented Generation system for document question
 answering. Users upload a PDF and ask natural-language questions about it;
