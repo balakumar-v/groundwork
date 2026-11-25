@@ -72,8 +72,8 @@ export const chunks = pgTable(
       .notNull()
       .references(() => documents.id, { onDelete: "cascade" }),
     content: text("content").notNull(),
-    // nvidia/nemotron-3-embed-1b:free via OpenRouter is 2048-dim (see
-    // src/lib/openrouter.ts for the model constant). If you swap embedding
+    // The embedding model (see src/lib/openrouter.ts) returns 2048-dim vectors.
+    // If you swap embedding
     // providers/models later, this dimension MUST match exactly or inserts
     // fail — pgvector enforces it at the column level. Changing it also
     // needs a migration (see migrations/0002_nemotron_embedding_2048.sql

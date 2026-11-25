@@ -14,10 +14,17 @@ export const openrouter = new OpenAI({
   baseURL: process.env.OPENROUTER_BASE_URL ?? "https://openrouter.ai/api/v1",
 });
 
-// Confirmed against OpenRouter's model docs: 2048-dim output, 8192 token
-// context window per input. Must match the `chunks.embedding` column
-// dimension exactly (see src/db/schema.ts) or inserts fail at the DB layer.
-export const EMBEDDING_MODEL = "nvidia/nemotron-3-embed-1b:free";
+// Embedding model. Configurable (EMBEDDING_MODEL) so that when a free model
+// is retired, switching is an environment change rather than a code change.
+// It MUST return EMBEDDING_DIMENSIONS-sized vectors, because that has to
+// match the `chunks.embedding` column (see src/db/schema.ts); a different
+// size fails loudly in pipeline/embedChunks.ts instead of corrupting data.
+//
+// Default: Nemotron 3.5 Embed 1B, 2048-dim, up to 32k tokens per input.
+// OpenRouter describes it as sharing the text embedding space of
+// Nemotron 3 Embed 1B (the previous default), so vectors already stored
+// from that model should remain comparable.
+export const EMBEDDING_MODEL = process.env.EMBEDDING_MODEL ?? "nvidia/nemotron-3.5-embed-1b:free";
 export const EMBEDDING_DIMENSIONS = 2048;
 
 // Chat model for answer generation. Kept as a required env var (not a

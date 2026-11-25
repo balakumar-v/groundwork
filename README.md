@@ -42,7 +42,7 @@ flowchart TD
     end
 
     subgraph External["OpenRouter"]
-        Embed["Embedding model<br/>nvidia/nemotron-3-embed-1b, 2048-dim"]
+        Embed["Embedding model<br/>nvidia/nemotron-3.5-embed-1b, 2048-dim"]
         Chat["Chat model<br/>configurable via CHAT_MODEL"]
     end
 
