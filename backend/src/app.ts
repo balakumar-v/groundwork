@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -8,7 +10,11 @@ import { authRouter } from "./routes/auth.js";
 import { documentsRouter } from "./routes/documents.js";
 import { conversationsRouter } from "./routes/conversations.js";
 
-if (!process.env.CORS_ORIGIN) {
+// On Render, RENDER_EXTERNAL_URL is this service's own public URL, which is the
+// right default when the frontend is served from the same service (then
+// CORS barely matters at all). Anywhere else an exact origin is required.
+const corsOrigin = process.env.CORS_ORIGIN ?? process.env.RENDER_EXTERNAL_URL;
+if (!corsOrigin) {
   throw new Error(
     "CORS_ORIGIN is not set (check your .env file). A credentialed CORS request " +
       "(cookies) cannot use the wildcard '*' origin — an exact origin is required."
@@ -20,7 +26,7 @@ export function createApp() {
 
   app.use(
     cors({
-      origin: process.env.CORS_ORIGIN,
+      origin: corsOrigin,
       // Required for the browser to send/receive the httpOnly auth cookie
       // cross-origin (frontend on Vercel, backend on Render). Without this,
       // `fetch(..., { credentials: "include" })` on the client is a no-op —
@@ -43,6 +49,34 @@ export function createApp() {
 
   app.use("/api/documents", authenticate, documentsRouter);
   app.use("/api/conversations", authenticate, conversationsRouter);
+
+  // Single-service deployment (e.g. one Render web service): if a built
+  // frontend is present, serve it from here. Same origin as the API means no
+  // CORS, a first-party login cookie (Safari/iOS block third-party ones), and
+  // the WebSocket on the same host. Absent by default, so local development
+  // and split deployments (frontend on Vercel/Netlify) are unaffected.
+  const publicDir = path.resolve(process.env.FRONTEND_DIST ?? path.join(process.cwd(), "public"));
+  const indexHtml = path.join(publicDir, "index.html");
+  if (fs.existsSync(indexHtml)) {
+    app.use(
+      express.static(publicDir, {
+        index: false,
+        // Vite fingerprints everything under /assets/, so it can be cached forever.
+        setHeaders: (res, filePath) => {
+          if (filePath.includes(`${path.sep}assets${path.sep}`)) {
+            res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+          }
+        },
+      })
+    );
+    // Client-side routes (/documents/:id, /documents/:id/gaps) must return the
+    // app shell. API, health and WebSocket paths are excluded so they keep
+    // their own JSON 404s.
+    app.get(/^\/(?!api\/|ws(\/|$)|health$).*/, (_req, res) => {
+      res.setHeader("Cache-Control", "no-cache");
+      res.sendFile(indexHtml);
+    });
+  }
 
   // 404 for anything unmatched
   app.use((_req, res) => {

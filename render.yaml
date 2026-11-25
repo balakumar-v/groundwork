@@ -1,31 +1,33 @@
-# Render Blueprint (render.com/docs/blueprint-spec). Lets `render.com` spin
-# up the backend service directly from this repo via "New > Blueprint"
-# instead of manually clicking through the dashboard's create-service form
-# — the actual env var VALUES (secrets) are still entered in Render's UI,
-# never committed here; `sync: false` is what tells Render "prompt for
-# this one, don't expect it in the repo."
+# Render Blueprint: ONE web service that serves both the API and the frontend.
+#
+# Why one service: the login cookie is then first-party. If the frontend and
+# backend sit on two different *.onrender.com hosts instead, Safari/iOS block
+# the cookie and sign-in silently fails.
+#
+# Secrets marked `sync: false` are typed into Render's dashboard when you
+# create the Blueprint; they are never committed here.
 services:
   - type: web
-    name: docuquery-backend
+    name: groundwork
     runtime: docker
-    dockerfilePath: ./backend/Dockerfile
-    dockerContext: ./backend
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
     plan: free
     healthCheckPath: /health
     envVars:
       - key: DATABASE_URL
-        sync: false # Neon connection string
+        sync: false # Postgres connection string (e.g. from Neon or Render Postgres)
       - key: OPENROUTER_API_KEY
         sync: false
       - key: OPENROUTER_BASE_URL
         value: https://openrouter.ai/api/v1
       - key: CHAT_MODEL
-        sync: false # e.g. an OpenRouter :free chat model slug
+        sync: false # an OpenRouter chat model slug
       - key: JWT_SECRET
-        generateValue: true # Render generates and stores a random secret
-      - key: CORS_ORIGIN
-        sync: false # exact deployed frontend origin, e.g. https://your-app.vercel.app
+        generateValue: true # Render creates a random secret
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: "4000"
+      # CORS_ORIGIN is not needed: the app falls back to Render's own
+      # RENDER_EXTERNAL_URL, and same-origin requests don't use CORS anyway.
+      # Optional: set TEACHER_SIGNUP_CODE in the dashboard to require a code
+      # for creating teacher accounts.
