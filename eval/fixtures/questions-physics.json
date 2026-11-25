@@ -1,0 +1,16 @@
+[
+  { "id": "f1", "type": "factual", "question": "What is the SI unit of force?", "expectedAnswerable": true, "expectedPages": [2], "expectedSection": "1.1 Newton's Second Law" },
+  { "id": "f2", "type": "factual", "question": "In the equation v = u + a * t, what does u stand for?", "expectedAnswerable": true, "expectedPages": [3], "expectedSection": "1.2 Equations of Motion" },
+  { "id": "f3", "type": "factual", "question": "How many watts is one horsepower?", "expectedAnswerable": true, "expectedPages": [5], "expectedSection": "2.2 Power" },
+  { "id": "f4", "type": "factual", "question": "What is kinetic energy measured in?", "expectedAnswerable": true, "expectedPages": [4], "expectedSection": "2.1 Kinetic Energy and Work" },
+  { "id": "f5", "type": "factual", "question": "Define power.", "expectedAnswerable": true, "expectedPages": [5], "expectedSection": "2.2 Power" },
+  { "id": "n1", "type": "numerical", "question": "Calculate the force on a 2 kg object accelerating at 3 m/s^2.", "expectedAnswerable": true, "expectedPages": [2], "expectedSection": "1.1 Newton's Second Law", "expectedNumeric": 6 },
+  { "id": "n2", "type": "numerical", "question": "A car starts from rest and accelerates at 4 m/s^2 for 5 s. Find its final velocity.", "expectedAnswerable": true, "expectedPages": [3], "expectedSection": "1.2 Equations of Motion", "expectedNumeric": 20 },
+  { "id": "n3", "type": "numerical", "question": "Find the kinetic energy of a 10 kg body moving at 4 m/s.", "expectedAnswerable": true, "expectedPages": [4], "expectedSection": "2.1 Kinetic Energy and Work", "expectedNumeric": 80 },
+  { "id": "n4", "type": "numerical", "question": "A machine does 600 J of work in 20 s. Determine its power.", "expectedAnswerable": true, "expectedPages": [5], "expectedSection": "2.2 Power", "expectedNumeric": 30 },
+  { "id": "n5", "type": "numerical", "question": "Calculate the distance covered by an object with initial velocity 2 m/s and acceleration 3 m/s^2 in 4 s.", "expectedAnswerable": true, "expectedPages": [3], "expectedSection": "1.2 Equations of Motion", "expectedNumeric": 32 },
+  { "id": "u1", "type": "unsupported", "question": "State Newton's third law of motion.", "expectedAnswerable": false, "expectedPages": [] },
+  { "id": "u2", "type": "unsupported", "question": "What is the speed of light?", "expectedAnswerable": false, "expectedPages": [] },
+  { "id": "u3", "type": "unsupported", "question": "Explain Ohm's law.", "expectedAnswerable": false, "expectedPages": [] },
+  { "id": "u4", "type": "unsupported", "question": "Calculate the gravitational force between two 5 kg masses placed 2 m apart.", "expectedAnswerable": false, "expectedPages": [] }
+]
